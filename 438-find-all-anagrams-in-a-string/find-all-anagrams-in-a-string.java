@@ -1,37 +1,33 @@
 class Solution {
-public List<Integer> findAnagrams(String s, String p) {
-    List<Integer> result = new ArrayList<>();
-    if (s.length() < p.length()) return result;
-
-    // Frequency arrays for s and p
-    int[] pCount = new int[26];
-    int[] sCount = new int[26];
-
-    // Initialize the frequency arrays
-    for (int i = 0; i < p.length(); i++) {
-        pCount[p.charAt(i) - 'a']++;
-        sCount[s.charAt(i) - 'a']++;
-    }
-
-    // Sliding window over s
-    for (int i = 0; i <= s.length() - p.length(); i++) {
-        // Check if the current window is an anagram
-        if (areArraysEqual(pCount, sCount)) result.add(i);
-
-        // Slide the window
-        if (i + p.length() < s.length()) {
-            sCount[s.charAt(i) - 'a']--; // Remove old char from the count
-            sCount[s.charAt(i + p.length()) - 'a']++; // Add new char to the count
+    public List<Integer> findAnagrams(String s, String p) {
+        int[] map = new int[26];
+        List<Integer> result = new ArrayList<>();
+        
+        for(int i=0;i<p.length();i++){
+            map[p.charAt(i) - 'a']++;
         }
+    
+        int windowStart = 0;
+        int windowEnd = 0;
+        while(windowEnd<s.length()){
+		// valid anagram
+            if(map[s.charAt(windowEnd) - 'a'] > 0){
+                map[s.charAt(windowEnd++) - 'a']--;
+			// window size equal to size of P
+                if(windowEnd-windowStart ==  p.length()){                    
+                    result.add(windowStart);
+                }
+            }
+			// window is of size 0
+            else if(windowStart == windowEnd){
+                windowStart ++;
+                windowEnd ++;
+            }
+			// decrease window size
+            else{
+                map[s.charAt(windowStart++) - 'a']++;
+            }      
+        }
+        return result;
     }
-
-    return result;
-}
-
-private boolean areArraysEqual(int[] arr1, int[] arr2) {
-    for (int i = 0; i < arr1.length; i++) {
-        if (arr1[i] != arr2[i]) return false;
-    }
-    return true;
-}
 }
